@@ -1,1 +1,100 @@
-# react_mobx_typescript_boilerplate
+# React.js + MobX + Typescript boilerplate
+
+## Main features
+
+-   React 16.12+
+-   MobX 5.13+
+-   mobx-react-lite 1.5+
+-   Webpack 4.39+
+-   Babel 7.5+
+-   Typescript 3.7+
+-   React HMR
+-   Custom reactive and user friendly MobX based router
+-   Offline mode
+-   API requests class
+-   Basic layout (auth and main) with dynamic header and footer
+-   Production build with separate vendors modules and app bundle
+
+## Rules and basics
+
+1. Use functional components with hooks. Don't use class components in this project.
+
+2. All components must be wrapped into `observer`, this can be imported like this `import { observer } from 'mobx-react';`
+
+3. Don't create components inside components, create them outside and pass data to them using props if needed
+
+4. All mutations of `observable` objects/arrays must be used `mutateObject` function. MobX is mutable, not immutable. Examples:
+
+```
+import { observable } from 'mobx';
+import mutateObject from 'helpers/mutateObject';
+
+class SomeState {
+    @observable someData = {
+        a: 1,
+        b: 2
+    };
+    @observable isFetching = false;
+    @observable serverError = null;
+    @observable items = [];
+
+    fetchData = async () => {
+        const result = await someApiRequest(); // Fetch items from server
+        this.items = result; // BAD
+        mutateObject(this.items, result); // GOOD
+    };
+
+    action1 = () => {
+        // We need to this.someData = { a: 2 }
+        this.someData = { a: 2 }; // BAD
+        mutateObject(this.someData, { a: 2 }); // GOOD
+    };
+
+    action2 = () => {
+        // We need to modify this.someData and keep properties
+
+        // BAD
+        this.someData = {
+            ...this.someData,
+            a: 2,
+            c: 4
+        };
+
+        // GOOD
+        mutateObject(this.someData, { a: 2, c: 4 }, true);
+    };
+
+    realOptimizedApiRequest = async () => {
+        // Before async calls state changes batched by default when wrapped in @action
+        this.isFetching = true;
+
+        // After async calls components will be re-render without batching if we
+        try {
+            const response = await someApiRequest(); // Fetch items from server
+
+            mutateObject(this.items, response.items);
+            this.isFetching = false;
+        } catch (e) {
+            this.serverError = e.message || 'Something went wrong';
+            this.isFetching = false;
+        }
+    }
+}
+```
+
+## Run
+
+```
+npm i -g yarn
+yarn install
+yarn start
+```
+
+Browser will be opened
+
+## Build
+
+```
+yarn run build:prod
+yarn run build:dev
+```

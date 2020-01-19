@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--ADAPTIVE FOR MOBILE-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="MobileOptimized" content="176">
+        <meta name="HandheldFriendly" content="True">
+        <style>@-ms-viewport{width:device-width;}</style>
+
+        <title>Hello React!</title>
+    </head>
+    <style type="text/css">
+        #preloader {
+            fill: #000;
+            background: #ffffff;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #preloader svg {
+            width: 52px;
+        }
+
+        #preloader.hidden {
+            display: none;
+        }
+    </style>
+    <body>
+        <div id="preloader">
+            <div>
+                <svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 52 12" enable-background="new 0 0 0 0" xml:space="preserve">
+                    <circle stroke="none" cx="6" cy="6" r="6">
+                        <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"></animate>
+                    </circle>
+                    <circle stroke="none" cx="26" cy="6" r="6">
+                        <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2"></animate>
+                    </circle>
+                    <circle stroke="none" cx="46" cy="6" r="6">
+                        <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.3"></animate>
+                    </circle>
+                </svg>
+            </div>
+        </div>
+
+        <span id="root"></span>
+    </body>
+</html>

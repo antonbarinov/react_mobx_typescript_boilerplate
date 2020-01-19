@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "target": "es2018",
+    "experimentalDecorators": true,
+    "checkJs": true,
+    "jsx": "react",
+    "moduleResolution": "node"
+  },
+  "exclude": [],
+  "include": [
+    "./src"
+  ]
+}
