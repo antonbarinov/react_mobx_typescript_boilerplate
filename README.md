@@ -2,24 +2,15 @@
 
 ## Main features
 
--   React 16.12+
--   MobX 5.13+
--   mobx-react-lite 1.5+
--   Webpack 4.39+
--   Babel 7.5+
--   Typescript 3.7+
--   React HMR
+-   Ready to use architecture
 -   Custom reactive and user friendly MobX based router
--   Offline mode
 -   API requests class
--   Basic layout (auth and main) with dynamic header and footer
--   Production build with separate vendors modules and app bundle
 
 ## Rules and basics
 
 1. Use functional components with hooks. Don't use class components in this project.
 
-2. All components must be wrapped into `observer`, this can be imported like this `import { observer } from 'mobx-react';`
+2. All components must be wrapped into `observer`, this can be imported like this `import { observer } from 'mobx-react-lite';`
 
 3. Don't create components inside components, create them outside and pass data to them using props if needed
 
