@@ -5,6 +5,7 @@
 -   Ready to use architecture
 -   Custom reactive and user friendly MobX based router
 -   API requests class
+-   Pre-commit hook: Prettier + ESlint auto fix and reformat code
 
 ## Rules and basics
 
