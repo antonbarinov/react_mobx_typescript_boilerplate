@@ -10,7 +10,7 @@ interface IProps {
     children: React.ReactChild;
 }
 
-export const MainLayout = observer(({ children }: IProps) => {
+export const AuthLayout = observer(({ children }: IProps) => {
     useLayoutGlobalLoader();
 
     const { initialFetching } = userState;

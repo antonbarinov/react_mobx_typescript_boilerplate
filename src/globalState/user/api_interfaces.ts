@@ -1,7 +1,10 @@
 export interface IApiResponseUser {
-    id: number;
     name: string;
-    email: string;
-    firstName: string;
-    lastName: string;
+    login: string;
+    accessToken: string;
+}
+
+export interface IApiResponseSignupOrLogin {
+    accessToken: string;
+    user: IApiResponseUser;
 }

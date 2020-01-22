@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 import ApiRequest, { getUserAccessToken } from 'lib/ApiRequest';
-import { IApiResponseUser } from './api_interfaces';
+import { IApiResponseUser, IApiResponseSignupOrLogin } from './api_interfaces';
 
 class User {
     @observable initialFetching = true;
@@ -20,7 +20,7 @@ class User {
                 this.isFetching = true;
                 const response = await new ApiRequest('GET /me').send();
 
-                this.user = response.getData();
+                this.user = response.data;
                 this.authorized = true;
             }
         } catch (e) {
@@ -42,7 +42,7 @@ class User {
 
     login = async (data) => {
         const response = await new ApiRequest('POST /login', false).sendJSON(data);
-        const respData = response.getData();
+        const respData: IApiResponseSignupOrLogin = response.data;
 
         if (respData.accessToken) {
             window.localStorage.setItem('accessToken', respData.accessToken);
@@ -59,7 +59,7 @@ class User {
 
     signup = async (data) => {
         const response = await new ApiRequest('POST /signup', false).sendJSON(data);
-        const respData = response.getData();
+        const respData: IApiResponseSignupOrLogin = response.data;
 
         if (respData.accessToken) {
             window.localStorage.setItem('accessToken', respData.accessToken);

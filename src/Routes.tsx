@@ -4,7 +4,10 @@ import { Router } from 'lib/router';
 
 import { MainPage } from 'pages/main';
 import { NotFoundPage } from 'pages/notFound';
-import MainLayout from 'layouts/main';
+import { MainLayout } from 'layouts/main';
+import { AuthLayout } from 'layouts/auth';
+import { LoginPage } from 'pages/login';
+import { SignupPage } from 'pages/signup';
 
 const routes = {
     '/': (
@@ -16,6 +19,16 @@ const routes = {
         <MainLayout>
             <MainPage />
         </MainLayout>
+    ),
+    '/login': (
+        <AuthLayout>
+            <LoginPage />
+        </AuthLayout>
+    ),
+    '/signup': (
+        <AuthLayout>
+            <SignupPage />
+        </AuthLayout>
     ),
     '': (
         <MainLayout>

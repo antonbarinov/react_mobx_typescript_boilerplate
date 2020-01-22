@@ -1,14 +1,14 @@
-import axios, { AxiosRequestConfig, Method, AxiosError } from 'axios';
+import axios, { AxiosRequestConfig, Method, AxiosError, AxiosResponse } from 'axios';
 import userState from 'globalState/user';
 
 /**
  * API BASE URL
  */
-let apiUrl = 'http://localhost:3010';
+let apiUrl = 'https://thy2j.sse.codesandbox.io';
 
 // Environment api path
 if (process.env.NODE_ENV === 'production') {
-    apiUrl = 'http://localhost:3010';
+    apiUrl = 'https://thy2j.sse.codesandbox.io';
 }
 
 window.location;
@@ -21,7 +21,7 @@ export const API_BASE_URL = apiUrl;
  * API BASE URL -- END
  */
 
-type UploadProgressFn = (uploadPercentage: number) => void;
+type UploadProgressFn = (uploadPercentage: number) => any;
 
 export default class ApiRequest {
     private __unifyErrorsHandler = true;
@@ -83,6 +83,7 @@ export default class ApiRequest {
         };
         if (this.__data !== null) options.data = this.__data;
 
+        // Send authorization header if we can
         const userAccessToken = getUserAccessToken();
         if (userAccessToken) options.headers.Authorization = userAccessToken;
 
@@ -160,4 +161,20 @@ export default class ApiRequest {
 
 export function getUserAccessToken() {
     return window.localStorage.getItem('accessToken');
+}
+
+interface IApiValidationerrorFields {
+    field?: string;
+    message: string;
+}
+
+interface IApiErrorData {
+    status: 'FAIL' | 'OK';
+    message: string;
+    errorType: 'validation' | 'message';
+    errors: IApiValidationerrorFields[];
+}
+
+export interface IApiError extends AxiosError<any> {
+    response: AxiosResponse<IApiErrorData>;
 }

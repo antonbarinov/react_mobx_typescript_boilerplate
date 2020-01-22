@@ -1,25 +1,42 @@
-import { anyObject } from 'declarations/types';
+import { anyObject, ReactChangeEvent, ReactChangeEventFunc } from 'declarations/types';
+import { observable } from 'mobx';
+import { IApiError } from 'lib/ApiRequest';
 
-type ReactChangeEventFunc = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-) => any;
-
-interface IFromField {
-    value: string;
-    errorMessage: string;
-    isFieldValid: boolean;
-    onChange: ReactChangeEventFunc;
-    interceptorFunc?: ReactChangeEventFunc;
+export interface IFormFields {
+    [k: string]: FromField;
 }
 
-interface IFormFields {
-    [k: string]: IFromField;
+export class FromField {
+    private interceptorFunc: ReactChangeEventFunc = null;
+    @observable value = null;
+    @observable errorMessage = '';
+    @observable isFieldValid = true;
+    __serverErrorMark = false;
+
+    constructor(defaultValue = '', interceptorFunc: ReactChangeEventFunc = null) {
+        this.value = defaultValue;
+        this.interceptorFunc = interceptorFunc;
+    }
+
+    onChange = (e: ReactChangeEvent) => {
+        const { interceptorFunc } = this;
+
+        if (interceptorFunc) {
+            const val = interceptorFunc(e);
+            if (val !== undefined) {
+                this.value = val;
+            }
+        } else {
+            this.value = e.target.value;
+        }
+    };
 }
 
 export default class FormValidator {
-    isFormValid = true;
+    @observable isFormValid = true;
     formFields: IFormFields = {};
-    serverErrorMessage = '';
+    @observable serverErrorMessage: string = null;
+    serverErrorsIndex = 0;
 
     constructor(formFields: IFormFields) {
         this.formFields = formFields;
@@ -28,57 +45,69 @@ export default class FormValidator {
     static createFormFieldObj(
         defaultValue = '',
         interceptorFunc: ReactChangeEventFunc = null,
-    ): IFromField {
-        return {
-            value: defaultValue,
-            errorMessage: '',
-            isFieldValid: true,
-            onChange(e) {
-                if (interceptorFunc) {
-                    const val = interceptorFunc(e);
-                    if (val !== undefined) {
-                        this.value = val;
-                    }
-                } else {
-                    this.value = e.target.value;
-                }
-            },
-        };
+    ): FromField {
+        return new FromField(defaultValue, interceptorFunc);
     }
 
-    applyServerValidationErrors(e): boolean {
-        let response;
-
+    applyServerValidationErrors(e: IApiError): boolean {
         try {
-            response = e.response.data;
+            const response = e.response.data;
             if (response.errorType === undefined) return false;
+
+            let result = false;
+            // Validation errors
+            if (response.errorType === 'validation') {
+                if (Array.isArray(response.errors)) {
+                    for (const { field, message } of response.errors) {
+                        const item = this.formFields[field];
+                        if (item) {
+                            item.errorMessage = message;
+                            item.isFieldValid = false;
+                            item.__serverErrorMark = true;
+                        }
+                    }
+
+                    for (const fieldName in this.formFields) {
+                        const item = this.formFields[fieldName];
+                        const hasServerError = response.errors.some(
+                            ({ field }) => fieldName === field,
+                        );
+                        if (item.__serverErrorMark && !hasServerError) {
+                            item.errorMessage = null;
+                            item.isFieldValid = true;
+                            item.__serverErrorMark = false;
+                        }
+                    }
+
+                    result = true;
+                }
+            }
+            // Text error from server
+            else if (response.errorType === 'message') {
+                this.serverErrorMessage = response.errors[0].message;
+            }
+            // Any cases
+            else {
+                this.serverErrorMessage = e.message || 'Something went wrong';
+            }
+
+            return result;
         } catch (e) {
+            console.error(e);
+            this.serverErrorMessage = e.message || 'Something went wrong';
             return false;
         }
+    }
 
-        let result = false;
-        // Validation errors
-        if (response.errorType === 'validation') {
-            if (Array.isArray(response.errors)) {
-                for (const { field, message } of response.errors) {
-                    if (this.formFields[field]) {
-                        this.formFields[field].errorMessage = message;
-                    }
-                }
+    async validate<T>(promises: Promise<T>[]) {
+        this.isFormValid = true;
+        await Promise.all(promises);
 
-                result = true;
-            }
-        }
-        // Text error from server
-        else if (response.errorType === 'message') {
-            this.serverErrorMessage = response.errors[0].message;
-        }
-
-        return result;
+        return this.isFormValid;
     }
 
     async validateField(
-        fieldObject: IFromField,
+        fieldObject: FromField,
         validationFunction: (value: any) => Promise<string | undefined>,
     ) {
         const { value } = fieldObject;
@@ -87,8 +116,9 @@ export default class FormValidator {
         if (result !== undefined) {
             fieldObject.errorMessage = result;
             fieldObject.isFieldValid = false;
+            fieldObject.__serverErrorMark = false;
             this.isFormValid = false;
-        } else {
+        } else if (fieldObject.__serverErrorMark === false) {
             fieldObject.errorMessage = '';
             fieldObject.isFieldValid = true;
         }

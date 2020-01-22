@@ -1,0 +1,46 @@
+import React from 'react';
+import { observer } from 'mobx-react-lite';
+import { Link } from 'lib/router';
+import { Container } from 'components/Container';
+import { SignupPageState } from './state';
+import { useLocalState } from 'hooks/useLocalState';
+import { FormFieldInput } from 'components/formFields/Input';
+
+export const SignupPage = observer(() => {
+    const state = useLocalState(SignupPageState);
+    const { formItems, formValidator } = state;
+
+    return (
+        <Container>
+            <h1>Signup</h1>
+
+            <div>
+                <div>Your Name:</div>
+                <FormFieldInput
+                    formData={formItems.name}
+                    htmlAttrs={{ placeholder: 'Your Name' }}
+                />
+            </div>
+            <div>
+                <div>Login:</div>
+                <FormFieldInput formData={formItems.login} htmlAttrs={{ placeholder: 'Login' }} />
+            </div>
+            <div>
+                <div>Password (only digits):</div>
+                <FormFieldInput
+                    formData={formItems.password}
+                    htmlAttrs={{ placeholder: 'Password (only digits)', type: 'password' }}
+                />
+            </div>
+
+            <div>
+                {formValidator.isFormValid === false && <b>{formValidator.serverErrorMessage}</b>}
+                <button onClick={state.validateAndSubmit}>Login</button>
+            </div>
+
+            <div>
+                <Link to="/login">Login</Link>
+            </div>
+        </Container>
+    );
+});
