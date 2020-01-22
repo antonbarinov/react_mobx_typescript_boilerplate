@@ -1,9 +1,13 @@
 import { anyObject } from 'declarations/types';
 
+type ReactChangeEventFunc = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => any;
+
 interface IFromField {
     value: string;
     errorMessage: string;
     isFieldValid: boolean;
+    onChange: ReactChangeEventFunc;
+    interceptorFunc?: ReactChangeEventFunc;
 }
 
 interface IFormFields {
@@ -19,11 +23,21 @@ export default class FormValidator {
         this.formFields = formFields;
     }
 
-    static createFormFieldObj(defaultValue = ''): IFromField {
+    static createFormFieldObj(defaultValue = '', interceptorFunc?: ReactChangeEventFunc): IFromField {
         return {
             value: defaultValue,
             errorMessage: '',
             isFieldValid: true,
+            onChange(e) {
+                if (interceptorFunc) {
+                    const val = interceptorFunc(e);
+                    if (val !== undefined) {
+                        this.value = val;
+                    }
+                } else {
+                    this.value = e.target.value;
+                }               
+            }
         };
     }
 
