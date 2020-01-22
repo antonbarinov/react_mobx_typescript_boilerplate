@@ -19,7 +19,7 @@
 
 ```
 import { observable } from 'mobx';
-import mutateObject from 'helpers/mutateObject';
+import { mutateObject } from 'helpers/mutateObject';
 
 class SomeState {
     @observable someData = {
@@ -56,8 +56,7 @@ class SomeState {
         mutateObject(this.someData, { a: 2, c: 4 }, true);
     };
 
-    realOptimizedApiRequest = async () => {
-        // Before async calls state changes batched by default when wrapped in @action
+    apiRequest = async () => {
         this.isFetching = true;
 
         // After async calls components will be re-render without batching if we
@@ -66,6 +65,7 @@ class SomeState {
 
             mutateObject(this.items, response.items);
             this.isFetching = false;
+            this.serverError = null;
         } catch (e) {
             this.serverError = e.message || 'Something went wrong';
             this.isFetching = false;

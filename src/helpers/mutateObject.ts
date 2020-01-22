@@ -1,5 +1,4 @@
 import { set, toJS, isObservable, remove, observable } from 'mobx';
-import { anyObject } from 'declarations/types';
 
 const isEnumerable = (value) => {
     return value !== null && typeof value === 'object';
