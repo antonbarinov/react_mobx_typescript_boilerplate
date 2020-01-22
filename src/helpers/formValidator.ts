@@ -1,6 +1,8 @@
 import { anyObject } from 'declarations/types';
 
-type ReactChangeEventFunc = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => any;
+type ReactChangeEventFunc = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+) => any;
 
 interface IFromField {
     value: string;
@@ -23,7 +25,10 @@ export default class FormValidator {
         this.formFields = formFields;
     }
 
-    static createFormFieldObj(defaultValue = '', interceptorFunc?: ReactChangeEventFunc): IFromField {
+    static createFormFieldObj(
+        defaultValue = '',
+        interceptorFunc: ReactChangeEventFunc = null,
+    ): IFromField {
         return {
             value: defaultValue,
             errorMessage: '',
@@ -36,8 +41,8 @@ export default class FormValidator {
                     }
                 } else {
                     this.value = e.target.value;
-                }               
-            }
+                }
+            },
         };
     }
 

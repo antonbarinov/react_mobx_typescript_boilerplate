@@ -4,7 +4,11 @@ const path = require('path');
 
 (async () => {
     const { stdout } = await exec(`git diff --name-only --cached`, { cwd: __dirname });
-    const files = stdout.trim().split('\n');
+    const files = stdout
+        .trim()
+        .split('\n')
+        .filter((f) => f != '');
+    console.log(files);
 
     const prettierFiles = [];
     const eslintFiles = [];
