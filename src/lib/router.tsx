@@ -4,6 +4,9 @@ import { observable, reaction } from 'mobx';
 import pathToRegexp from 'path-to-regexp';
 import { mutateObject } from 'helpers/mutateObject';
 import { anyObject } from 'declarations/types';
+import { EventEmitter } from 'lib/EventEmitter';
+
+const eventEmitter = new EventEmitter();
 
 function exec(re: RegExp, str: string, keys = []) {
     const match = re.exec(str);
@@ -64,6 +67,15 @@ class CurrentRoute {
 
         window.addEventListener('popstate', this.setCurrentRoute);
         window.addEventListener('hashchange', this.setCurrentRoute);
+
+        reaction(
+            () => {
+                return JSON.stringify(this.currentLocation);
+            },
+            () => {
+                eventEmitter.emit('navigate');
+            },
+        );
     }
 
     setCurrentRoute = () => {
@@ -92,6 +104,7 @@ class CurrentRoute {
         };
 
         mutateObject(this.currentLocation, route);
+        eventEmitter.emit('navigate');
     };
 }
 
@@ -105,23 +118,22 @@ interface IRoutes {
 
 class RouterState {
     @observable.ref currentComponent = null;
-}
+    routes: IRoutes = {};
+    disposer: () => any = null;
 
-interface IRouterProps {
-    routes: IRoutes;
-    global?: boolean;
-    hashMode?: boolean;
-}
-/**
- * Props explanation:
- * @routes - key-value object where key is route and value is what must to rendered. If key is "" or "*" that means Page not found
- * @global - mark router as global for populate currentRoute.routeParams and currentRoute.currentRegExp
- * @hashMode - hash router instead of regular url's
- */
-export const Router = observer(({ routes, global = false, hashMode = false }: IRouterProps) => {
-    const [state] = useState(() => new RouterState());
+    constructor(routes: IRoutes) {
+        this.routes = routes;
 
-    const navigate = useCallback(() => {
+        this.disposer = eventEmitter.on('navigate', this.navigate);
+        this.navigate();
+    }
+
+    onUnmount = () => {
+        this.disposer();
+    };
+
+    navigate = () => {
+        const { routes } = this;
         let result = routes[''] || routes['*'] || null;
 
         let isRouteFound = false;
@@ -156,24 +168,31 @@ export const Router = observer(({ routes, global = false, hashMode = false }: IR
             currentRoute.currentRegExp = pathToRegexp(currentRoute.currentLocation.path, []);
         }
 
-        state.currentComponent = result;
-    }, []);
+        this.currentComponent = result;
+    };
+}
+
+interface IRouterProps {
+    routes: IRoutes;
+    global?: boolean;
+    hashMode?: boolean;
+}
+/**
+ * Props explanation:
+ * @routes - key-value object where key is route and value is what must to rendered. If key is "" or "*" that means Page not found
+ * @global - mark router as global for populate currentRoute.routeParams and currentRoute.currentRegExp
+ * @hashMode - hash router instead of regular url's
+ */
+export const Router = observer(({ routes, global = false, hashMode = false }: IRouterProps) => {
+    const [state] = useState(() => new RouterState(routes));
+
+    useEffect(() => state.onUnmount, []);
 
     useEffect(() => {
         if (global) globalRoutersCount++;
         if (globalRoutersCount > 1) throw new Error(`Only 1 router exemplar can be global`);
 
-        const disposer = reaction(
-            () => {
-                return JSON.stringify(currentRoute.currentLocation);
-            },
-            () => {
-                navigate();
-            },
-        );
-
         return () => {
-            disposer();
             globalRoutersCount--;
         };
     }, []);
@@ -185,8 +204,6 @@ export const Router = observer(({ routes, global = false, hashMode = false }: IR
             currentRoute.setCurrentRoute();
         };
     }, [hashMode]);
-
-    useState(() => navigate());
 
     return state.currentComponent;
 });

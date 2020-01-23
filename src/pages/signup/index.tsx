@@ -34,8 +34,11 @@ export const SignupPage = observer(() => {
             </div>
 
             <div>
-                {formValidator.isFormValid === false && <b>{formValidator.serverErrorMessage}</b>}
-                <button onClick={state.validateAndSubmit}>Login</button>
+                {formValidator.serverErrorMessage && <b>{formValidator.serverErrorMessage}</b>}
+                {state.isFetching === false && (
+                    <button onClick={state.validateAndSubmit}>Signup</button>
+                )}
+                {state.isFetching === true && <b>Signing up...</b>}
             </div>
 
             <div>

@@ -8,11 +8,17 @@ import { MainLayout } from 'layouts/main';
 import { AuthLayout } from 'layouts/auth';
 import { LoginPage } from 'pages/login';
 import { SignupPage } from 'pages/signup';
+import { ProfilePage } from 'pages/profile';
 
 const routes = {
     '/': (
         <MainLayout>
             <MainPage />
+        </MainLayout>
+    ),
+    '/profile': (
+        <MainLayout privateRoute>
+            <ProfilePage />
         </MainLayout>
     ),
     '/page/:page': (

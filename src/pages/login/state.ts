@@ -15,12 +15,10 @@ const passwordInterceptor = (e: ReactChangeEvent) => {
 
 export class LoginPageState {
     @observable isFetching = false;
-
     formItems = {
         login: FormValidator.createFormFieldObj(),
         password: FormValidator.createFormFieldObj('', passwordInterceptor),
     };
-
     formValidator = new FormValidator(this.formItems);
 
     validateAndSubmit = async () => {

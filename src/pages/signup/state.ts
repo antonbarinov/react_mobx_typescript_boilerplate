@@ -1,5 +1,8 @@
 import FormValidator from 'helpers/formValidator';
 import { ReactChangeEvent } from 'declarations/types';
+import { observable } from 'mobx';
+import userState from 'globalState/user';
+import { smartRedirect } from 'helpers/redirect';
 
 const passwordInterceptor = (e: ReactChangeEvent) => {
     const val = e.target.value;
@@ -11,12 +14,12 @@ const passwordInterceptor = (e: ReactChangeEvent) => {
 };
 
 export class SignupPageState {
+    @observable isFetching = false;
     formItems = {
         name: FormValidator.createFormFieldObj(),
         login: FormValidator.createFormFieldObj(),
         password: FormValidator.createFormFieldObj('', passwordInterceptor),
     };
-
     formValidator = new FormValidator(this.formItems);
 
     validateAndSubmit = async () => {
@@ -55,6 +58,14 @@ export class SignupPageState {
 
         if (!isFormValid) return;
 
-        console.log('ok');
+        try {
+            this.isFetching = true;
+            await userState.signup(formValidator.getFieldsData());
+            smartRedirect('/profile');
+        } catch (e) {
+            formValidator.applyServerValidationErrors(e);
+        } finally {
+            this.isFetching = false;
+        }
     };
 }

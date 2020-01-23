@@ -1,10 +1,12 @@
 type FN = () => Promise<any> | any;
 
+type emitsList = string | string[];
+
 export class EventEmitter {
     events: { [k: string]: Set<any> } = {};
     logEmits: boolean = false;
-    on: (eventName: string | string[], fn: FN) => void;
-    off: (eventName: string | string[], fn: FN) => void;
+    on: (eventName: emitsList, fn: FN) => () => void;
+    off: (eventName: emitsList, fn: FN) => void;
 
     constructor() {
         this.on = this.subscribe;
@@ -12,7 +14,7 @@ export class EventEmitter {
     }
 
     // eventName can be also array of event names
-    emit(eventName: string | string[], ...restParams) {
+    emit(eventName: emitsList, ...restParams) {
         let eventNames = eventName;
         if (!Array.isArray(eventName)) eventNames = [eventName];
 
@@ -35,7 +37,7 @@ export class EventEmitter {
     }
 
     // eventName can be also array of event names
-    subscribe(eventName: string | string[], fn: FN) {
+    subscribe(eventName: emitsList, fn: FN): () => void {
         let eventNames = eventName;
         if (!Array.isArray(eventName)) eventNames = [eventName];
 
@@ -54,7 +56,7 @@ export class EventEmitter {
     }
 
     // eventName can be also array of event names
-    unsubscribe(eventName: string | string[], fn: FN) {
+    unsubscribe(eventName: emitsList, fn: FN) {
         let eventNames = eventName;
         if (!Array.isArray(eventName)) eventNames = [eventName];
 

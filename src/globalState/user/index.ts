@@ -1,6 +1,7 @@
 import { observable } from 'mobx';
 import ApiRequest, { getUserAccessToken } from 'lib/ApiRequest';
 import { IApiResponseUser, IApiResponseSignupOrLogin } from './api_interfaces';
+import { globalEventEmitter } from 'lib/EventEmitter';
 
 class User {
     @observable initialFetching = true;
@@ -22,6 +23,7 @@ class User {
 
                 this.user = response.data;
                 this.authorized = true;
+                globalEventEmitter.emit('user:login');
             }
         } catch (e) {
             this.user = null;
@@ -35,9 +37,10 @@ class User {
     };
 
     logout = () => {
+        globalEventEmitter.emit('user:logout');
         window.localStorage.removeItem('accessToken');
-        this.user = null;
         this.authorized = false;
+        this.user = null;
     };
 
     login = async (data) => {

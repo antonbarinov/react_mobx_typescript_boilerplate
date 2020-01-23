@@ -2,8 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useLayoutGlobalLoader } from 'hooks/layouts/useLayoutGlobalLoader';
 
-import userState from 'globalState/user';
-
 import styles from './styles.module.scss';
 
 interface IProps {
@@ -12,9 +10,6 @@ interface IProps {
 
 export const AuthLayout = observer(({ children }: IProps) => {
     useLayoutGlobalLoader();
-
-    const { initialFetching } = userState;
-    if (initialFetching) return null;
 
     return (
         <>
