@@ -4,7 +4,7 @@ import userState from 'globalState/user';
 /**
  * API BASE URL
  */
-let apiUrl = 'https://thy2j.sse.codesandbox.io';
+let apiUrl = '/api';
 
 // Environment api path
 if (process.env.NODE_ENV === 'production') {

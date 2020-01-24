@@ -90,6 +90,14 @@ module.exports = {
         liveReload: false,
         publicPath: '/',
         contentBase: path.join(__dirname, 'src'),
+        proxy: {
+            '/api': {
+                target: 'https://thy2j.sse.codesandbox.io',
+                pathRewrite: { '^/api': '' },
+                secure: false,
+                changeOrigin: true,
+            },
+        },
     },
 
     // Enable sourcemaps for debugging webpack's output.

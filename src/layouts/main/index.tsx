@@ -1,8 +1,7 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useLayoutGlobalLoader } from 'hooks/layouts/useLayoutGlobalLoader';
-import { globalEventEmitter } from 'lib/EventEmitter';
-import { redirect } from 'lib/router';
+import { redirect, Link } from 'lib/router';
 import userState from 'globalState/user';
 
 import styles from './styles.module.scss';
@@ -35,10 +34,11 @@ export const MainLayout = observer((props: IProps) => {
     const { initialFetching, authorized } = userState;
 
     useLayoutGlobalLoader();
+    // Redirect on private route and user not authorized
     usePrivateRouteHandler(props);
 
     if (initialFetching) return null;
-    if (privateRoute && initialFetching === false && authorized === false) return null;
+    if (privateRoute && authorized === false) return null;
 
     return (
         <>
@@ -46,6 +46,14 @@ export const MainLayout = observer((props: IProps) => {
                 <header>
                     header
                     {authorized && <button onClick={userState.logout}>Logout</button>}
+                    {authorized === false && (
+                        <>
+                            &nbsp;&nbsp;
+                            <Link to="/login">Login</Link>
+                            &nbsp;&nbsp;
+                            <Link to="/signup">Signup</Link>
+                        </>
+                    )}
                 </header>
                 <div className={styles.main}>{children}</div>
                 <footer>footer</footer>
