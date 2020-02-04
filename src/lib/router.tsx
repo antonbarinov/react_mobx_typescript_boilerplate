@@ -79,7 +79,7 @@ class CurrentRoute {
     }
 
     setCurrentRoute = () => {
-        const windowLocation = window.location;
+        const windowLocation = JSON.parse(JSON.stringify(window.location));
 
         let path, fullPath;
 
