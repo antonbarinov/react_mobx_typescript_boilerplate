@@ -145,8 +145,11 @@ class RouterState {
             if (route === '' || route === '*') continue;
             const component = routes[route];
 
+            let routePath = route;
+            if (routePath.substr(-1) === '/') routePath = routePath.substr(0, routePath.length - 1);
+
             const keys = [];
-            const regexp = pathToRegexp(route, keys);
+            const regexp = pathToRegexp(routePath, keys);
             const res = exec(regexp, path, keys);
 
             if (res) {
