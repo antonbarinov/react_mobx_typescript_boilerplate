@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node_modules/.bin/webpack-dev-server",
-        "build:prod": "cross-env NODE_ENV=production node_modules/.bin/webpack -p ",
-        "build:dev": "node_modules/.bin/webpack",
+        "start": "yarn && node_modules/.bin/webpack-dev-server",
+        "build:prod": "yarn && cross-env NODE_ENV=production node_modules/.bin/webpack -p ",
+        "build:dev": "yarn && node_modules/.bin/webpack",
         "eslint:check": "node_modules/.bin/eslint --ext ts,tsx,js,jsx src/",
         "eslint:fix": "node_modules/.bin/eslint --fix --ext ts,tsx,js,jsx src/",
         "prettier": "node_modules/.bin/prettier --write \"./src/**/*.{ts,tsx,js,jsx,css,scss}\"",
