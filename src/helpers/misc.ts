@@ -11,7 +11,15 @@ export function validateEmail(email: string) {
     return re.test(String(email).toLowerCase());
 }
 
-export function сlosest(currentElem: HTMLElement, elemToFind: HTMLElement) {
+export function cn(classesObj = {}) {
+    const result = [];
+    for (const [className, value] of Object.entries(classesObj)) {
+        if (value) result.push(className);
+    }
+    return result.join(' ');
+}
+
+export function closest(currentElem: HTMLElement, elemToFind: HTMLElement) {
     if (currentElem === elemToFind) return true;
 
     let parent = currentElem.parentNode;
