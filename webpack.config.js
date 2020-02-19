@@ -30,7 +30,10 @@ if (!dev) {
             filename: `[name].${hashType}.css`,
             chunkFilename: `[id].${hashType}.css`,
         }),
-        new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin({
+            analyzerPort: 'auto',
+            analyzerMode: 'static',
+        }),
     ];
 }
 
@@ -119,7 +122,7 @@ module.exports = {
             },
             {
                 test: /\.json$/,
-                loaders: ['json'],
+                use: ['json'],
             },
             {
                 test: /\.module\.(c|sa|sc)ss$/,
