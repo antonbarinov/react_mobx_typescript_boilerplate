@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const { DuplicatesPlugin } = require('inspectpack/plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 // Plugins -- END
 
 const path = require('path');
@@ -18,7 +19,7 @@ const hashType = dev ? '[hash]' : '[contenthash]';
 let devPlugins = [];
 let prodPlugins = [];
 if (dev) {
-    devPlugins = [new webpack.HotModuleReplacementPlugin()];
+    devPlugins = [];
 }
 if (!dev) {
     prodPlugins = [
@@ -29,6 +30,7 @@ if (!dev) {
             filename: `[name].${hashType}.css`,
             chunkFilename: `[id].${hashType}.css`,
         }),
+        new BundleAnalyzerPlugin(),
     ];
 }
 
