@@ -106,7 +106,7 @@ module.exports = {
     },
 
     // Enable sourcemaps for debugging webpack's output.
-    devtool: dev ? 'source-map' : 'none',
+    devtool: dev ? 'source-map' : false,
 
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
@@ -121,12 +121,16 @@ module.exports = {
                 include: path.join(__dirname, 'src'),
             },
             {
-                test: /\.json$/,
-                use: ['json'],
-            },
-            {
                 test: /\.module\.(c|sa|sc)ss$/,
-                use: stylesLoaders(true),
+                oneOf: [
+                    {
+                        resourceQuery: '?no_modules',
+                        use: stylesLoaders(false),
+                    },
+                    {
+                        use: stylesLoaders(true),
+                    },
+                ],
             },
             {
                 test: /\.(c|sa|sc)ss$/,
@@ -134,19 +138,25 @@ module.exports = {
                 use: stylesLoaders(false),
             },
             {
-                test: /\?raw$/,
-                use: ['raw-loader'],
-            },
-            {
                 test: /\.(png|jpg|jpeg|gif|webp|svg)$/,
-                use: [
+                oneOf: [
                     {
-                        loader: 'file-loader',
-                        options: {
-                            name: `[path]__[name]__${hashType}.[ext]`,
-                            outputPath: './assets/file-loader/',
-                            publicPath: '',
-                        },
+                        resourceQuery: '?raw',
+                        use: ['raw-loader'],
+                    },
+                    {
+                        use: [
+                            {
+                                loader: 'file-loader',
+                                options: {
+                                    name: dev
+                                        ? `[path]__[name]__${hashType}.[ext]`
+                                        : `${hashType}.[ext]`,
+                                    outputPath: `./assets/file-loader/`,
+                                    publicPath: '',
+                                },
+                            },
+                        ],
                     },
                 ],
             },
