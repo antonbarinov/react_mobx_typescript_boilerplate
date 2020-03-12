@@ -1,4 +1,4 @@
-type FN = () => Promise<any> | any;
+type FN = (...params: any[]) => Promise<any> | any;
 
 type emitsList = string | string[];
 
