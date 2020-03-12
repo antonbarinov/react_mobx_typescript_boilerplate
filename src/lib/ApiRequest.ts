@@ -21,7 +21,7 @@ export const API_BASE_URL = apiUrl;
 
 type UploadProgressFn = (uploadPercentage: number) => any;
 
-export default class ApiRequest {
+export default class ApiRequest<T> {
     private __unifyErrorsHandler = true;
     private __method: Method = 'GET';
     private __url = '/';
@@ -140,7 +140,7 @@ export default class ApiRequest {
         }
     }
 
-    async sendJSON(data: object = {}) {
+    async sendJSON(data: object = {}): Promise<T | any> {
         this.__data = JSON.stringify(data);
 
         this.__options.headers = {
@@ -150,7 +150,7 @@ export default class ApiRequest {
         return this.__send();
     }
 
-    async send(data = null) {
+    async send(data = null): Promise<T | any> {
         this.__data = data;
 
         return this.__send();
