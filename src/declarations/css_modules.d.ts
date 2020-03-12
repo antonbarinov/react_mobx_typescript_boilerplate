@@ -5,3 +5,10 @@ declare module '*.module.css' {
     const classNames: IClassNames;
     export = classNames;
 }
+declare module '*.module.css?no_modules' {
+    interface IClassNames {
+        [className: string]: string;
+    }
+    const classNames: IClassNames;
+    export = classNames;
+}
