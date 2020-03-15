@@ -12,7 +12,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 setTimeout(() => {
     configure({
         reactionScheduler: (f) => {
-            setTimeout(f, 0);
+            setTimeout(f, 1);
         },
     });
-}, 0);
+}, 1);
