@@ -1,25 +1,30 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { FCState } from './state';
+import { useLocalState } from 'hooks/useLocalState';
+import { MyExamplePropsState } from './state';
 
 import styles from './styles.module.scss';
-import { useLocalState } from 'hooks/useLocalState';
 
-interface IProps {
+interface IMyExampleProps {
     children?: React.ReactNode;
     innerRef?: React.Ref<HTMLDivElement>;
     text?: string;
     htmlAttrs?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-export const FC = observer((props: IProps) => {
-    const state = useLocalState(FCState);
+const MyExample = observer((props: IMyExampleProps) => {
+    const state = useLocalState(MyExamplePropsState);
 
     const { htmlAttrs = {}, text = 'world' } = props;
 
     return (
         <div className={styles.some_style} {...htmlAttrs}>
-            <h1>Hello {text}</h1>
+            <h1>
+                Hello {text} {state.title}
+            </h1>
+            <input onChange={state.handleTitleChange} />
         </div>
     );
 });
+
+export default MyExample;
