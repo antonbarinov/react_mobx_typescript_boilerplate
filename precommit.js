@@ -39,5 +39,5 @@ const path = require('path');
         throw e;
     }
 
-    await exec(`git add ${files.map((f) => '"' + f + '"').join(' ')}`, { cwd: __dirname });
+    await exec(`git add .`, { cwd: __dirname });
 })();
