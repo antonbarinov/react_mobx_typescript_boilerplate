@@ -2,6 +2,14 @@ const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const path = require('path');
 
+function sleep(ms = 0) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, ms);
+    });
+}
+
 (async () => {
     const { stdout } = await exec(`git diff --name-only --cached`, { cwd: __dirname });
     const files = stdout
@@ -40,4 +48,5 @@ const path = require('path');
     }
 
     await exec(`git add .`, { cwd: __dirname });
+    await sleep(1000);
 })();
