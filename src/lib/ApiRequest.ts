@@ -161,7 +161,7 @@ export function getUserAccessToken() {
     return window.localStorage.getItem('accessToken');
 }
 
-interface IApiValidationerrorFields {
+interface IApiValidationErrorFields {
     field?: string;
     message: string;
 }
@@ -170,7 +170,7 @@ interface IApiErrorData {
     status: 'FAIL' | 'OK';
     message: string;
     errorType: 'validation' | 'message';
-    errors: IApiValidationerrorFields[];
+    errors: IApiValidationErrorFields[];
 }
 
 export interface IApiError extends AxiosError<any> {
