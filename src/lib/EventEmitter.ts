@@ -1,14 +1,21 @@
 import { EVENT_EMITTERS_CALLBACKS_PARAMS } from 'constants/eventEmitterEmits';
 
+// Extract keys from EVENT_EMITTERS_CALLBACKS_PARAMS
+type KeysOfEmitters<T> = T extends keyof EVENT_EMITTERS_CALLBACKS_PARAMS ? T : never;
+// Extract type by key of EVENT_EMITTERS_CALLBACKS_PARAMS[key] (in this case type is callback function)
+type EmitterFunction<T> = EVENT_EMITTERS_CALLBACKS_PARAMS[KeysOfEmitters<T>];
+// Extract EVENT_EMITTERS_CALLBACKS_PARAMS[key] callback function arguments
+type EmitterFunctionArguments<T> = Parameters<EmitterFunction<T>>;
+
+interface IEvents {
+    [k: string]: Set<any>;
+}
+
 export class EventEmitter {
-    events: { [k: string]: Set<any> } = {};
+    events: IEvents = {};
     logEmits: boolean = false;
 
-    // eventName can be also array of event names
-    emit<
-        T extends keyof EVENT_EMITTERS_CALLBACKS_PARAMS,
-        P extends EVENT_EMITTERS_CALLBACKS_PARAMS
-    >(eventName: T, ...restParams: Parameters<P[T]>) {
+    emit<P1>(eventName: KeysOfEmitters<P1>, ...restParams: EmitterFunctionArguments<P1>) {
         const events = this.events[eventName];
 
         if (this.logEmits) {
@@ -25,11 +32,7 @@ export class EventEmitter {
         }
     }
 
-    // eventName can be also array of event names
-    on<T extends keyof EVENT_EMITTERS_CALLBACKS_PARAMS, P extends EVENT_EMITTERS_CALLBACKS_PARAMS>(
-        eventName: T,
-        fn: P[T],
-    ): () => void {
+    on<P1>(eventName: KeysOfEmitters<P1>, fn: EmitterFunction<P1>): () => void {
         if (!this.events[eventName]) {
             this.events[eventName] = new Set();
         }
@@ -42,11 +45,7 @@ export class EventEmitter {
         return this.off.bind(this, eventName, fn);
     }
 
-    // eventName can be also array of event names
-    off<T extends keyof EVENT_EMITTERS_CALLBACKS_PARAMS, P extends EVENT_EMITTERS_CALLBACKS_PARAMS>(
-        eventName: T,
-        fn: P[T],
-    ) {
+    off<P1>(eventName: KeysOfEmitters<P1>, fn: EmitterFunction<P1>) {
         const events = this.events[eventName];
 
         if (events) events.delete(fn);
