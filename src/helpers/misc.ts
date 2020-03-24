@@ -22,9 +22,9 @@ export function cn(classesObj = {}) {
 export function closest(currentElem: HTMLElement, elemToFind: HTMLElement) {
     if (currentElem === elemToFind) return true;
 
-    let parent = currentElem.parentNode;
+    let parent = elemToFind.parentNode;
     while (parent) {
-        if (parent === elemToFind) return true;
+        if (parent === currentElem) return true;
 
         parent = parent.parentNode;
     }
