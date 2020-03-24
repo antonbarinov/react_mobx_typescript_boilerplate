@@ -4,7 +4,43 @@ import { observable, reaction } from 'mobx';
 import pathToRegexp from 'path-to-regexp';
 import { mutateObject } from 'helpers/mutateObject';
 import { anyObject } from 'declarations/types';
-import { EventEmitter } from 'lib/EventEmitter';
+
+interface IEvents {
+    [k: string]: Set<any>;
+}
+
+class EventEmitter {
+    events: IEvents = {};
+
+    emit(eventName: string, ...restParams: any[]) {
+        const events = this.events[eventName];
+
+        if (events) {
+            events.forEach((fn) => {
+                fn.call(null, ...restParams);
+            });
+        }
+    }
+
+    on(eventName: string, fn: any): () => void {
+        if (!this.events[eventName]) {
+            this.events[eventName] = new Set();
+        }
+
+        const events = this.events[eventName];
+
+        events.add(fn);
+
+        // or use unsubscribe function
+        return this.off.bind(this, eventName, fn);
+    }
+
+    off(eventName: string, fn: any) {
+        const events = this.events[eventName];
+
+        if (events) events.delete(fn);
+    }
+}
 
 const eventEmitter = new EventEmitter();
 
