@@ -1,96 +1,27 @@
-interface IContextObj {
-    [key: string]: any;
-    __asyncHelpers?: object;
-}
+type anyFunction = (...args: any[]) => any;
 
-interface IContextHelper {
-    value: number;
-}
+const rcMap = new WeakMap();
 
-function contextHelper(context: IContextObj, key: string): IContextHelper {
-    if (!context.__asyncHelpers) context.__asyncHelpers = {};
-    if (!context.__asyncHelpers[key]) context.__asyncHelpers[key] = { value: 0 };
-
-    return context.__asyncHelpers[key];
-}
-
-function debounceFunc(context: IContextObj, key: string): (delayInMs?: number) => Promise<boolean> {
-    key += '__debounce';
-    const contextData = contextHelper(context, key);
-
-    return (delayInMs = 300) => {
-        const currentValue = ++contextData.value;
-
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(currentValue === contextData.value);
-            }, delayInMs);
-        });
-    };
-}
-
-class CustomError extends Error {
-    nonActual = false;
-}
-
-function stillActualChecker(context: IContextObj, key: string): () => boolean {
-    key += '__stillActualChecker';
-    const contextData = contextHelper(context, key);
-    const currentValue = ++contextData.value;
+export function noRaceCondition(functionLink: anyFunction): () => boolean {
+    const counter = rcMap.get(functionLink) || 0;
+    const currentCounter = counter + 1;
+    rcMap.set(functionLink, currentCounter);
 
     return () => {
-        const isActual = currentValue === contextData.value;
-        if (!isActual) {
-            const err = new CustomError('Not actual any more');
-            err.nonActual = true;
-            throw err;
-        }
-
-        return isActual;
+        return rcMap.get(functionLink) === currentCounter;
     };
 }
 
-/**
- * Don't exec "func" if other "func" in progress yet
- */
-export function noRaceConditions(context: IContextObj, key: string, func: () => Promise<any>) {
-    (async () => {
-        key += '__withOnlyOneInTime';
-        const contextData = contextHelper(context, key);
-        if (contextData.value === 1) return false;
+const debounceMap = new WeakMap();
 
-        contextData.value = 1;
+export function debouncer(functionLink: anyFunction): (delayInMs: number) => Promise<boolean> {
+    const counter = debounceMap.get(functionLink) || 0;
+    const currentValue = counter + 1;
+    debounceMap.set(functionLink, currentValue);
 
-        try {
-            await func();
-        } catch (e) {
-            throw e;
-        } finally {
-            contextData.value = 0;
-        }
-    })();
-}
-
-interface helperFnProps {
-    stillActualCheckpoint: () => boolean;
-    debounce: (delayInMs?: number) => Promise<boolean>;
-}
-type helperFn = (params: helperFnProps) => Promise<any>;
-/**
- * Use helpers for typical async operations
- */
-export function withAsyncHelpers(context: IContextObj, key: string, func: helperFn): void {
-    (async () => {
-        const stillActualCheckpoint = stillActualChecker(context, key);
-        const debounce = debounceFunc(context, key);
-
-        try {
-            await func({
-                stillActualCheckpoint,
-                debounce,
-            });
-        } catch (e) {
-            if (!e.nonActual) throw e;
-        }
-    })();
+    return (delayInMs = 300) => new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(currentValue === debounceMap.get(functionLink));
+        }, delayInMs);
+    });
 }
