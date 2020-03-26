@@ -1,0 +1,21 @@
+$media_size__desktop: 1024px;
+$media_size__tablet: 1023px;
+$media_size__mobile: 767px;
+
+@mixin respond-to-desktop {
+    @media all and (min-width: $media_size__desktop) {
+        @content;
+    }
+}
+
+@mixin respond-to-tablet {
+    @media all and (min-width: $media_size__mobile) and (max-width: $media_size__tablet) {
+        @content;
+    }
+}
+
+@mixin respond-to-mobile {
+    @media all and (max-width: $media_size__mobile) {
+        @content;
+    }
+}
