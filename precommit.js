@@ -16,7 +16,6 @@ function sleep(ms = 0) {
         .trim()
         .split('\n')
         .filter((f) => f != '');
-    console.log(files);
 
     const prettierFiles = [];
     const eslintFiles = [];
@@ -47,6 +46,6 @@ function sleep(ms = 0) {
         throw e;
     }
 
-    await exec(`git add .`, { cwd: __dirname });
+    await exec(`git add ${files.map((f) => '"' + f + '"').join(' ')}`, { cwd: __dirname });
     await sleep(1000);
 })();

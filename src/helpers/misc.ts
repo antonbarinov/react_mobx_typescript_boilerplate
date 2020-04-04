@@ -31,3 +31,16 @@ export function closest(currentElem: HTMLElement, elemToFind: HTMLElement) {
 
     return false;
 }
+
+export function isTargetInWeakSet(weakSet: WeakSet<any>, target: any) {
+    if (weakSet.has(target)) return true;
+
+    let parent = target.parentNode;
+    while (parent) {
+        if (weakSet.has(parent)) return true;
+
+        parent = parent.parentNode;
+    }
+
+    return false;
+}
