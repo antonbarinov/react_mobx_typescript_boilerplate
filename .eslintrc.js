@@ -34,7 +34,6 @@ module.exports = {
         'no-regex-spaces': 'error', // disallow multiple spaces in regular expression literals - https://eslint.org/docs/rules/no-regex-spaces
         'no-sparse-arrays': 'error', // disallow sparse arrays - https://eslint.org/docs/rules/no-sparse-arrays
         'no-unexpected-multiline': 'error', // disallow confusing multiline expressions - https://eslint.org/docs/rules/no-unexpected-multiline
-        'no-unsafe-finally': 'error', // disallow control flow statements in finally blocks - https://eslint.org/docs/rules/no-unsafe-finally
         'no-unsafe-negation': 'error', // disallow negating the left operand of relational operators - https://eslint.org/docs/rules/no-unsafe-negation
         'use-isnan': 'error', // require calls to isNaN() when checking for NaN - https://eslint.org/docs/rules/use-isnan
         'valid-typeof': 'error', // enforce comparing typeof expressions against valid strings - https://eslint.org/docs/rules/valid-typeof
