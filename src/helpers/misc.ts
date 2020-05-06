@@ -44,3 +44,29 @@ export function isTargetInWeakSet(weakSet: WeakSet<any>, target: any) {
 
     return false;
 }
+
+export function numberFormat(number: number, thousandsSeparator = ' ', decimals = 3, decPoint = '.') {
+    const floatedNumber = parseFloat(number + '');
+    if (isNaN(floatedNumber)) return NaN;
+
+    const numChunks = floatedNumber.toString().split('.');
+
+    let integerNumberString = numChunks[0];
+    let decimalNumberString = numChunks[1];
+    let formattedNumberArray = [];
+
+    while (integerNumberString.length > 0) {
+        let sliceLength = integerNumberString.length;
+        if (sliceLength > 3) sliceLength = 3;
+        formattedNumberArray.push(integerNumberString.slice(sliceLength * -1));
+        integerNumberString = integerNumberString.slice(0, sliceLength * -1);
+    }
+
+    let resultNumber = formattedNumberArray.reverse().join(thousandsSeparator);
+
+    if (decimalNumberString && decimals > 0) {
+        resultNumber += decPoint + decimalNumberString.slice(0, decimals);
+    }
+
+    return resultNumber;
+}
