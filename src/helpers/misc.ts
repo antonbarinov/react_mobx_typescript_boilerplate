@@ -70,3 +70,27 @@ export function numberFormat(number: number, thousandsSeparator = ' ', decimals 
 
     return resultNumber;
 }
+
+/**
+ * Get absolute element position X, Y from document.body
+ */
+export function getScreenCoordinates(el: HTMLElement) {
+    const position = {
+        x: el.offsetLeft,
+        y: el.offsetTop,
+    };
+
+    let parent = el.offsetParent as HTMLElement;
+
+    while (parent) {
+        position.x += parent.offsetLeft;
+        position.y += parent.offsetTop;
+        if (parent == document.body) {
+            break;
+        } else {
+            parent = parent.offsetParent as HTMLElement;
+        }
+    }
+
+    return position;
+}
