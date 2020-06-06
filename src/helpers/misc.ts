@@ -1,3 +1,5 @@
+import { WithBooleanFlag } from 'compositions/WithBooleanFlag';
+
 export function sleep(ms = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -93,4 +95,12 @@ export function getScreenCoordinates(el: HTMLElement) {
     }
 
     return position;
+}
+
+export function getBool(bool: WithBooleanFlag | boolean) {
+    if (bool instanceof WithBooleanFlag) {
+        return bool.value;
+    } else {
+        return bool;
+    }
 }
