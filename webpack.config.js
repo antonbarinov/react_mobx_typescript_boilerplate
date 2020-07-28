@@ -95,6 +95,8 @@ module.exports = {
         liveReload: false,
         publicPath: '/',
         contentBase: path.join(__dirname, 'src'),
+        host: '0.0.0.0',
+        useLocalIp: true,
         proxy: {
             '/api': {
                 target: 'https://thy2j.sse.codesandbox.io',
@@ -149,9 +151,7 @@ module.exports = {
                             {
                                 loader: 'file-loader',
                                 options: {
-                                    name: dev
-                                        ? `[path]__[name]__${hashType}.[ext]`
-                                        : `${hashType}.[ext]`,
+                                    name: dev ? `[path]__[name]__${hashType}.[ext]` : `${hashType}.[ext]`,
                                     outputPath: `./assets/file-loader/`,
                                     publicPath: '',
                                 },
