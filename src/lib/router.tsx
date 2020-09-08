@@ -192,6 +192,10 @@ class RouterState {
                 isRouteFound = true;
                 result = component;
 
+                for (const key in res) {
+                    res[key] = decodeURI(res[key]);
+                }
+
                 // Set global route params only from global router, not from local
                 if (global) {
                     mutateObject(currentRoute.routeParams, res);
@@ -329,14 +333,7 @@ export const Link = observer(
         if (activeClass && state.active) classNames.push(activeClass);
 
         return (
-            <a
-                {...restProps}
-                {...htmlAttrs}
-                className={classNames.join(' ')}
-                href={to}
-                data-active={state.active}
-                onClick={handleClick}
-            >
+            <a {...restProps} {...htmlAttrs} className={classNames.join(' ')} href={to} data-active={state.active} onClick={handleClick}>
                 {children}
             </a>
         );
