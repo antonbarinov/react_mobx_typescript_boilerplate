@@ -200,6 +200,8 @@ class RouterState {
                 if (global) {
                     mutateObject(currentRoute.routeParams, res);
                     currentRoute.currentRegExp = regexp;
+                } else {
+                    mutateObject(currentRoute.routeParams, {});
                 }
 
                 break;
