@@ -3,14 +3,15 @@ import { observable } from 'mobx';
 import { IApiError } from 'lib/ApiRequest';
 
 export interface IFormFields {
-    [k: string]: FromField;
+    [k: string]: FormField;
 }
 
-export class FromField {
+export class FormField<ComponentState = any> {
     private interceptorFunc: ReactChangeEventFunc = null;
-    @observable value = null;
+    @observable value: string = null;
     @observable errorMessage = '';
     @observable isFieldValid = true;
+    componentState: ComponentState = null;
     __serverErrorMark = false;
 
     constructor(defaultValue = '', interceptorFunc: ReactChangeEventFunc = null) {
@@ -42,11 +43,8 @@ export default class FormValidator {
         this.formFields = formFields;
     }
 
-    static createFormFieldObj(
-        defaultValue = '',
-        interceptorFunc: ReactChangeEventFunc = null,
-    ): FromField {
-        return new FromField(defaultValue, interceptorFunc);
+    static createFormFieldObj(defaultValue = '', interceptorFunc: ReactChangeEventFunc = null): FormField {
+        return new FormField(defaultValue, interceptorFunc);
     }
 
     applyServerValidationErrors(e: IApiError): boolean {
@@ -69,9 +67,7 @@ export default class FormValidator {
 
                     for (const fieldName in this.formFields) {
                         const item = this.formFields[fieldName];
-                        const hasServerError = response.errors.some(
-                            ({ field }) => fieldName === field,
-                        );
+                        const hasServerError = response.errors.some(({ field }) => fieldName === field);
                         if (item.__serverErrorMark && !hasServerError) {
                             item.errorMessage = null;
                             item.isFieldValid = true;
@@ -106,10 +102,7 @@ export default class FormValidator {
         return this.isFormValid;
     }
 
-    async validateField(
-        fieldObject: FromField,
-        validationFunction: (value: any) => Promise<string | undefined>,
-    ) {
+    async validateField(fieldObject: FormField, validationFunction: (value: any) => Promise<string | undefined>) {
         const { value } = fieldObject;
         const result = await validationFunction(value);
 

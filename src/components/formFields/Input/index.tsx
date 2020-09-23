@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { FromField } from 'helpers/formValidator';
+import { FormField } from 'helpers/formValidator';
 
 interface IProps {
     innerRef?: React.Ref<HTMLInputElement>;
-    formData: FromField;
+    formData: FormField;
     htmlAttrs?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
@@ -13,12 +13,7 @@ export const FormFieldInput = observer((props: IProps) => {
 
     return (
         <div>
-            <input
-                {...htmlAttrs}
-                onChange={formData.onChange}
-                value={formData.value}
-                ref={innerRef}
-            />
+            <input {...htmlAttrs} onChange={formData.onChange} value={formData.value} ref={innerRef} />
             {formData.isFieldValid === false && <b>{formData.errorMessage}</b>}
         </div>
     );

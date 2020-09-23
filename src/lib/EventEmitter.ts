@@ -1,22 +1,15 @@
 import { EVENT_EMITTERS_CALLBACKS_PARAMS } from 'constants/eventEmitterEmits';
 
-// Extract keys from EVENT_EMITTERS_CALLBACKS_PARAMS
-type KeysOfEmitters<T> = T extends keyof EVENT_EMITTERS_CALLBACKS_PARAMS ? T : never;
-// Extract type by key of EVENT_EMITTERS_CALLBACKS_PARAMS[key] (in this case type is callback function)
-type EmitterFunction<T> = EVENT_EMITTERS_CALLBACKS_PARAMS[KeysOfEmitters<T>];
-// Extract EVENT_EMITTERS_CALLBACKS_PARAMS[key] callback function arguments
-type EmitterFunctionArguments<T> = Parameters<EmitterFunction<T>>;
-
-interface IEvents {
-    [k: string]: Set<any>;
+interface IKeyFuncVal {
+    [k: string]: (...args) => any;
 }
 
-export class EventEmitter {
-    events: IEvents = {};
+export class EventEmitter<Events extends IKeyFuncVal, Key extends keyof Events = keyof Events> {
     logEmits: boolean = false;
+    private listeners: Map<Key, Set<Events[Key]>> = new Map();
 
-    emit<P1>(eventName: KeysOfEmitters<P1>, ...restParams: EmitterFunctionArguments<P1>) {
-        const events = this.events[eventName];
+    emit<K extends Key>(eventName: K, ...restParams: Parameters<Events[K]>) {
+        const events = this.listeners.get(eventName);
 
         if (this.logEmits) {
             let subscribersCount = 0;
@@ -32,12 +25,12 @@ export class EventEmitter {
         }
     }
 
-    on<P1>(eventName: KeysOfEmitters<P1>, fn: EmitterFunction<P1>): () => void {
-        if (!this.events[eventName]) {
-            this.events[eventName] = new Set();
+    on<K extends Key>(eventName: K, fn: Events[K]): () => void {
+        if (!this.listeners.get(eventName)) {
+            this.listeners.set(eventName, new Set());
         }
 
-        const events = this.events[eventName];
+        const events = this.listeners.get(eventName);
 
         events.add(fn);
 
@@ -45,11 +38,21 @@ export class EventEmitter {
         return this.off.bind(this, eventName, fn);
     }
 
-    off<P1>(eventName: KeysOfEmitters<P1>, fn: EmitterFunction<P1>) {
-        const events = this.events[eventName];
+    once<K extends Key>(eventName: K, fn: Events[K]): () => void {
+        // @ts-ignore
+        const unsubscribe = this.on(eventName, (...args: any[]) => {
+            fn(...args);
+            unsubscribe();
+        });
+
+        return unsubscribe;
+    }
+
+    off<K extends Key>(eventName: K, fn: Events[K]) {
+        const events = this.listeners.get(eventName);
 
         if (events) events.delete(fn);
     }
 }
 
-export const globalEventEmitter = new EventEmitter();
+export const globalEventEmitter = new EventEmitter<EVENT_EMITTERS_CALLBACKS_PARAMS>();

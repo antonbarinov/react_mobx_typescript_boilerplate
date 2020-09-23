@@ -4,45 +4,12 @@ import { observable, reaction } from 'mobx';
 import pathToRegexp from 'path-to-regexp';
 import { mutateObject } from 'helpers/mutateObject';
 import { anyObject } from 'declarations/types';
+import { EventEmitter } from 'lib/EventEmitter';
 
-interface IEvents {
-    [k: string]: Set<any>;
-}
-
-class EventEmitter {
-    events: IEvents = {};
-
-    emit(eventName: string, ...restParams: any[]) {
-        const events = this.events[eventName];
-
-        if (events) {
-            events.forEach((fn) => {
-                fn.call(null, ...restParams);
-            });
-        }
-    }
-
-    on(eventName: string, fn: any): () => void {
-        if (!this.events[eventName]) {
-            this.events[eventName] = new Set();
-        }
-
-        const events = this.events[eventName];
-
-        events.add(fn);
-
-        // or use unsubscribe function
-        return this.off.bind(this, eventName, fn);
-    }
-
-    off(eventName: string, fn: any) {
-        const events = this.events[eventName];
-
-        if (events) events.delete(fn);
-    }
-}
-
-const eventEmitter = new EventEmitter();
+type RouterEvents = {
+    navigate: () => any;
+};
+const eventEmitter = new EventEmitter<RouterEvents>();
 
 function exec(re: RegExp, str: string, keys = []) {
     const match = re.exec(str);
@@ -222,6 +189,7 @@ interface IRouterProps {
     global?: boolean;
     hashMode?: boolean;
 }
+
 /**
  * Props explanation:
  * @routes - key-value object where key is route and value is what must to rendered. If key is "" or "*" that means Page not found
@@ -243,11 +211,9 @@ export const Router = observer(({ routes, global = false, hashMode = false }: IR
     }, []);
 
     useEffect(() => {
-        () => {
-            currentRoute.hashMode = !!hashMode;
-            if (hashMode && window.location.hash === '') window.location.hash = '/';
-            currentRoute.setCurrentRoute();
-        };
+        currentRoute.hashMode = Boolean(hashMode);
+        if (hashMode && window.location.hash === '') window.location.hash = '/';
+        currentRoute.setCurrentRoute();
     }, [hashMode]);
 
     return state.currentComponent;
@@ -262,8 +228,10 @@ interface ILinkProps {
     children?: React.ReactNode;
     className?: string;
     htmlAttrs?: React.HTMLAttributes<HTMLAnchorElement>;
+
     [x: string]: any;
 }
+
 /**
  * Props explanation:
  * @to - link url

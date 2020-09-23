@@ -89,9 +89,7 @@ export default class ApiRequest<T extends any> {
 
         // Upload progress
         options.onUploadProgress = (progressEvent) => {
-            let uploadPercentage = parseInt(
-                Math.round((progressEvent.loaded * 100) / progressEvent.total) + '',
-            );
+            let uploadPercentage = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total) + '');
             if (typeof this.__onUploadProgress === 'function') {
                 this.__onUploadProgress(uploadPercentage);
             }
@@ -143,9 +141,7 @@ export default class ApiRequest<T extends any> {
     async sendJSON(data: object = {}): Promise<T> {
         this.__data = JSON.stringify(data);
 
-        this.__options.headers = {
-            'Content-Type': 'application/json',
-        };
+        this.__options.headers['Content-Type'] = 'application/json';
 
         return this.__send();
     }

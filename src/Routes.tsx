@@ -9,11 +9,17 @@ import { AuthLayout } from 'layouts/auth';
 import { LoginPage } from 'pages/login';
 import { SignupPage } from 'pages/signup';
 import { ProfilePage } from 'pages/profile';
+import { ElectroCalcPage } from 'pages/electro_calc';
 
 const routes = {
     '/': (
         <MainLayout>
             <MainPage />
+        </MainLayout>
+    ),
+    '/electro': (
+        <MainLayout>
+            <ElectroCalcPage />
         </MainLayout>
     ),
     '/profile': (
