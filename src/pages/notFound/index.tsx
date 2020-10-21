@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Link } from 'lib/router';
+import { Link } from 'lib/Router';
 
 import styles from './styles.module.scss';
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
-import { currentRoute, Link } from 'lib/router';
+import { currentRoute, Link } from 'lib/Router';
 import { Container } from 'components/Container';
 import { MainPageState } from './state';
 import { useLocalState } from 'hooks/useLocalState';

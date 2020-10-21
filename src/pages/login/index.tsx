@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Link } from 'lib/router';
+import { Link } from 'lib/Router';
 import { Container } from 'components/Container';
 import { LoginPageState } from './state';
 import { useLocalState } from 'hooks/useLocalState';
@@ -20,10 +20,7 @@ export const LoginPage = observer(() => {
             </div>
             <div>
                 <div>Password (only digits):</div>
-                <FormFieldInput
-                    formData={formItems.password}
-                    htmlAttrs={{ placeholder: 'Password (only digits)', type: 'password' }}
-                />
+                <FormFieldInput formData={formItems.password} htmlAttrs={{ placeholder: 'Password (only digits)', type: 'password' }} />
             </div>
 
             <div>
@@ -32,9 +29,7 @@ export const LoginPage = observer(() => {
                         <b>{formValidator.serverErrorMessage}</b>
                     </div>
                 )}
-                {state.isFetching === false && (
-                    <button onClick={state.validateAndSubmit}>Login</button>
-                )}
+                {state.isFetching === false && <button onClick={state.validateAndSubmit}>Login</button>}
                 {state.isFetching === true && <b>Logging in...</b>}
             </div>
 

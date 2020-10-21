@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useLayoutGlobalLoader } from 'hooks/layouts/useLayoutGlobalLoader';
-import { redirect, Link } from 'lib/router';
+import { redirect, Link } from 'lib/Router';
 import userState from 'globalState/user';
 
 import styles from './styles.module.scss';
@@ -18,10 +18,7 @@ function usePrivateRouteHandler(props: IProps) {
         const doRedirect = (initialFetching || authorized) === false;
 
         if (privateRoute && doRedirect) {
-            window.localStorage.setItem(
-                'redirect',
-                window.location.pathname + window.location.search + window.location.hash,
-            );
+            window.localStorage.setItem('redirect', window.location.pathname + window.location.search + window.location.hash);
             redirect('/login');
         }
     }, []);
