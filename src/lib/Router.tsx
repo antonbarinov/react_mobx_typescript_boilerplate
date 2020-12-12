@@ -252,7 +252,8 @@ export const Link = (props: ILinkProps) => {
     } = props;
     const [state] = useState(() => observable({
         active: false,
-    }));
+    }),
+    );
 
     useEffect(
         () => reaction(
@@ -301,10 +302,7 @@ export const Link = (props: ILinkProps) => {
     if (activeClass && state.active) classNames.push(activeClass);
 
     return (
-        <a {...restProps} {...htmlAttrs} className={classNames.join(' ')}
-           href={to}
-           data-active={state.active}
-           onClick={handleClick}>
+        <a {...restProps} {...htmlAttrs} className={classNames.join(' ')} href={to} data-active={state.active} onClick={handleClick}>
             {children}
         </a>
     );

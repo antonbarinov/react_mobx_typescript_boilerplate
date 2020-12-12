@@ -46,7 +46,7 @@ export class WithBooleanFlag {
 
     setValue = (val: boolean) => {
         this.value = val;
-    }
+    };
 
     toggle = () => {
         this.value = !this.value;

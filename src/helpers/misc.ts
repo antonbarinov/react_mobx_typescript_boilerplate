@@ -34,8 +34,12 @@ export function closest(currentElem: HTMLElement, elemToFind: HTMLElement) {
     return false;
 }
 
-export function bind<T extends Function>(target: object, propertyKey: string, descriptor: TypedPropertyDescriptor<T>): TypedPropertyDescriptor<T> | void {
-    if(!descriptor || (typeof descriptor.value !== 'function')) {
+export function bind<T extends Function>(
+    target: object,
+    propertyKey: string,
+    descriptor: TypedPropertyDescriptor<T>,
+): TypedPropertyDescriptor<T> | void {
+    if (!descriptor || typeof descriptor.value !== 'function') {
         throw new TypeError(`Only methods can be decorated with @bind. <${propertyKey}> is not a method!`);
     }
 
