@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { observer } from 'mobx-react-lite';
 import { useLayoutGlobalLoader } from 'hooks/layouts/useLayoutGlobalLoader';
 import { redirect, Link } from 'lib/Router';
 import userState from 'globalState/user';
@@ -26,7 +25,7 @@ function usePrivateRouteHandler(props: IProps) {
     redirectChecker();
 }
 
-export const MainLayout = observer((props: IProps) => {
+export const MainLayout = (props: IProps) => {
     const { children, privateRoute } = props;
     const { initialFetching, authorized } = userState;
 
@@ -57,4 +56,4 @@ export const MainLayout = observer((props: IProps) => {
             </div>
         </>
     );
-});
+};

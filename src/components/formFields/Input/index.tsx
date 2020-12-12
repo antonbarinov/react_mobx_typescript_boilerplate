@@ -1,5 +1,4 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
 import { FormField } from 'helpers/formValidator';
 
 interface IProps {
@@ -8,7 +7,7 @@ interface IProps {
     htmlAttrs?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
-export const FormFieldInput = observer((props: IProps) => {
+export const FormFieldInput = (props: IProps) => {
     const { htmlAttrs = {}, formData, innerRef } = props;
 
     return (
@@ -17,4 +16,4 @@ export const FormFieldInput = observer((props: IProps) => {
             {formData.isFieldValid === false && <b>{formData.errorMessage}</b>}
         </div>
     );
-});
+};

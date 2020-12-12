@@ -1,9 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { useEffect, useRef, useState } from 'react';
 import { currentRoute, Link } from 'lib/Router';
 import { Container } from 'components/Container';
 import { MainPageState } from './state';
-import { useLocalState } from 'hooks/useLocalState';
 
 const updateTimeEffect = (state: MainPageState) => () => {
     document.title = 'Main Page | Boilerplate';
@@ -15,8 +13,8 @@ const updateTimeEffect = (state: MainPageState) => () => {
     };
 };
 
-export const MainPage = observer(() => {
-    const state = useLocalState(MainPageState);
+export const MainPage = () => {
+    const [state] = useState(() => new MainPageState());
 
     const testRef = useRef<HTMLDivElement>();
 
@@ -56,4 +54,4 @@ export const MainPage = observer(() => {
             <br />
         </Container>
     );
-});
+};

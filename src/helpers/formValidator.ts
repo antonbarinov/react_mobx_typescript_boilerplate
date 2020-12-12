@@ -1,4 +1,4 @@
-import { anyObject, ReactChangeEvent, ReactChangeEventFunc } from 'declarations/types';
+import { ReactChangeEvent, ReactChangeEventFunc } from 'declarations/types';
 import { observable } from 'mobx';
 import { IApiError } from 'lib/ApiRequest';
 
@@ -33,18 +33,14 @@ export class FormField<ComponentState = any> {
     };
 }
 
-export default class FormValidator {
+export default class FormValidator<TFormFields extends IFormFields> {
     @observable isFormValid = true;
-    formFields: IFormFields = {};
+    formFields: TFormFields;
     @observable serverErrorMessage: string = null;
     serverErrorsIndex = 0;
 
-    constructor(formFields: IFormFields) {
+    constructor(formFields: TFormFields) {
         this.formFields = formFields;
-    }
-
-    static createFormFieldObj(defaultValue = '', interceptorFunc: ReactChangeEventFunc = null): FormField {
-        return new FormField(defaultValue, interceptorFunc);
     }
 
     applyServerValidationErrors(e: IApiError): boolean {
@@ -102,7 +98,7 @@ export default class FormValidator {
         return this.isFormValid;
     }
 
-    async validateField(fieldObject: FormField, validationFunction: (value: any) => Promise<string | undefined>) {
+    async validateField(fieldObject: FormField, validationFunction: (value: FormField['value']) => Promise<string | undefined>) {
         const { value } = fieldObject;
         const result = await validationFunction(value);
 
@@ -121,8 +117,9 @@ export default class FormValidator {
         return this.isFormValid;
     }
 
-    getFieldsData(): anyObject {
-        let result = {};
+    getFieldsData() {
+        type KeyVal = { [k in keyof TFormFields]: FormField['value'] };
+        const result: KeyVal = {} as KeyVal;
 
         for (let fieldName in this.formFields) {
             if (this.formFields.hasOwnProperty(fieldName)) {

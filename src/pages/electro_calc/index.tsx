@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { useEffect, useRef, useState } from 'react';
 import { Container } from 'components/Container';
 import { MainPageState } from './state';
-import { useLocalState } from 'hooks/useLocalState';
 import { FormFieldInput } from 'components/formFields/Input';
 
-export const ElectroCalcPage = observer(() => {
-    const state = useLocalState(MainPageState);
+export const ElectroCalcPage = () => {
+    const [state] = useState(() => new MainPageState());
 
     return (
         <Container>
@@ -46,4 +44,4 @@ export const ElectroCalcPage = observer(() => {
             </div>
         </Container>
     );
-});
+};

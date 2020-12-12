@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
 import { Router } from 'lib/Router';
 
 import { MainPage } from 'pages/main';
@@ -49,8 +48,8 @@ const routes = {
     ),
 };
 
-const Routes = observer(() => {
+const Routes = () => {
     return <Router global routes={routes} />;
-});
+};
 
 export default Routes;

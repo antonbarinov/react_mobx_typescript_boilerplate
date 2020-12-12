@@ -40,11 +40,15 @@ export default class ApiRequest<T extends any> {
             .toUpperCase() as Method;
         this.__url = url.substr(spaceIndex + 1).trim();
 
-        if (!this.isAbsolute()) this.__url = (window.API_BASE_URL || API_BASE_URL) + this.__url;
+        if (!this.isAbsolute(API_BASE_URL) && !this.isAbsolute(url)) {
+            this.__url = window.location.origin + API_BASE_URL + this.__url;
+        } else {
+            this.__url = API_BASE_URL + this.__url;
+        }
     }
 
-    private isAbsolute() {
-        return this.__url.indexOf('http://') === 0 || this.__url.indexOf('https://') === 0;
+    private isAbsolute(url: string) {
+        return url.indexOf('http://') === 0 || url.indexOf('https://') === 0 || url.indexOf('//') === 0;
     }
 
     qs(params: object = {}) {

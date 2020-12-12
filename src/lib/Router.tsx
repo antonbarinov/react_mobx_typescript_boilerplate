@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { observer, useObservable } from 'mobx-react-lite';
 import { observable, reaction } from 'mobx';
 import pathToRegexp from 'path-to-regexp';
-import { mutateObject } from 'helpers/mutateObject';
 import { anyObject } from 'declarations/types';
 import { EventEmitter } from 'lib/EventEmitter';
 
@@ -98,7 +96,7 @@ class CurrentRoute {
 
         const parsedURL = new URL(fullPath, windowLocation.origin);
         const searchParams = Object.fromEntries(parsedURL.searchParams.entries());
-        mutateObject(this.searchParams, searchParams);
+        this.searchParams = searchParams;
 
         const route = {
             path,
@@ -106,7 +104,7 @@ class CurrentRoute {
             location: windowLocation,
         };
 
-        mutateObject(this.currentLocation, route);
+        this.currentLocation = route;
         eventEmitter.emit('navigate');
     };
 }
@@ -165,10 +163,10 @@ class RouterState {
 
                 // Set global route params only from global router, not from local
                 if (global) {
-                    mutateObject(currentRoute.routeParams, res);
+                    currentRoute.routeParams = res;
                     currentRoute.currentRegExp = regexp;
                 } else {
-                    mutateObject(currentRoute.routeParams, {});
+                    currentRoute.routeParams = {};
                 }
 
                 break;
@@ -176,7 +174,7 @@ class RouterState {
         }
 
         if (!isRouteFound) {
-            mutateObject(currentRoute.routeParams, {});
+            currentRoute.routeParams = {};
             currentRoute.currentRegExp = pathToRegexp(currentRoute.currentLocation.path, []);
         }
 
@@ -196,7 +194,7 @@ interface IRouterProps {
  * @global - mark router as global for populate currentRoute.routeParams and currentRoute.currentRegExp
  * @hashMode - hash router instead of regular url's
  */
-export const Router = observer(({ routes, global = false, hashMode = false }: IRouterProps) => {
+export const Router = ({ routes, global = false, hashMode = false }: IRouterProps) => {
     const [state] = useState(() => new RouterState(routes));
 
     useEffect(() => state.onUnmount, []);
@@ -217,7 +215,7 @@ export const Router = observer(({ routes, global = false, hashMode = false }: IR
     }, [hashMode]);
 
     return state.currentComponent;
-});
+};
 
 interface ILinkProps {
     to: string;
@@ -240,8 +238,8 @@ interface ILinkProps {
  * @grabActive - callback function that tells is link active or not
  * @activeClass - class that applied when url related to this Link
  */
-export const Link = observer(
-    ({
+export const Link = (props: ILinkProps) => {
+    const {
         to,
         exact = false,
         dontIgnoreHash = false,
@@ -251,61 +249,63 @@ export const Link = observer(
         className = null,
         htmlAttrs = {},
         ...restProps
-    }: ILinkProps) => {
-        const state = useObservable({
-            active: false,
-        });
+    } = props;
+    const [state] = useState(() => observable({
+        active: false,
+    }));
 
-        useEffect(
-            () => reaction(
-                () => {
-                    const { currentRegExp, currentLocation } = currentRoute;
+    useEffect(
+        () => reaction(
+            () => {
+                const { currentRegExp, currentLocation } = currentRoute;
 
-                    return [to, exact, currentLocation, currentRegExp];
-                },
-                () => {
-                    calcActive();
-                },
-            ),
-            [],
-        );
+                return [to, exact, currentLocation, currentRegExp];
+            },
+            () => {
+                calcActive();
+            },
+        ),
+        [],
+    );
 
-        const handleClick = useCallback((e) => {
-            e.preventDefault();
+    const handleClick = useCallback((e) => {
+        e.preventDefault();
 
-            redirect(to);
-        }, []);
+        redirect(to);
+    }, []);
 
-        const calcActive = useCallback(() => {
-            const { currentRegExp, currentLocation } = currentRoute;
+    const calcActive = useCallback(() => {
+        const { currentRegExp, currentLocation } = currentRoute;
 
-            let active = false;
-            if (exact) {
-                if (dontIgnoreHash && !currentRoute.hashMode) {
-                    active = to === currentLocation.fullPath + currentLocation.location.hash;
-                } else {
-                    active = to === currentLocation.fullPath;
-                }
-            } else if (currentRegExp && currentRegExp.exec(to)) {
-                active = true;
+        let active = false;
+        if (exact) {
+            if (dontIgnoreHash && !currentRoute.hashMode) {
+                active = to === currentLocation.fullPath + currentLocation.location.hash;
+            } else {
+                active = to === currentLocation.fullPath;
             }
+        } else if (currentRegExp && currentRegExp.exec(to)) {
+            active = true;
+        }
 
-            if (active !== state.active) {
-                state.active = active;
-                grabActive && grabActive(active);
-            }
-        }, []);
+        if (active !== state.active) {
+            state.active = active;
+            grabActive && grabActive(active);
+        }
+    }, []);
 
-        useState(() => calcActive());
+    useState(() => calcActive());
 
-        let classNames = [];
-        if (className) classNames.push(className);
-        if (activeClass && state.active) classNames.push(activeClass);
+    let classNames = [];
+    if (className) classNames.push(className);
+    if (activeClass && state.active) classNames.push(activeClass);
 
-        return (
-            <a {...restProps} {...htmlAttrs} className={classNames.join(' ')} href={to} data-active={state.active} onClick={handleClick}>
-                {children}
-            </a>
-        );
-    },
-);
+    return (
+        <a {...restProps} {...htmlAttrs} className={classNames.join(' ')}
+           href={to}
+           data-active={state.active}
+           onClick={handleClick}>
+            {children}
+        </a>
+    );
+};

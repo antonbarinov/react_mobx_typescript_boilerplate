@@ -1,13 +1,11 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { useState } from 'react';
 import { Link } from 'lib/Router';
 import { Container } from 'components/Container';
 import { LoginPageState } from './state';
-import { useLocalState } from 'hooks/useLocalState';
 import { FormFieldInput } from 'components/formFields/Input';
 
-export const LoginPage = observer(() => {
-    const state = useLocalState(LoginPageState);
+export const LoginPage = () => {
+    const [state] = useState(() => new LoginPageState());
     const { formItems, formValidator } = state;
 
     return (
@@ -38,4 +36,4 @@ export const LoginPage = observer(() => {
             </div>
         </Container>
     );
-});
+};

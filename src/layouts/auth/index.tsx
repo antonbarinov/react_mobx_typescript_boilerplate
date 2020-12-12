@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
 import { useLayoutGlobalLoader } from 'hooks/layouts/useLayoutGlobalLoader';
 import { Link } from 'lib/Router';
 
@@ -9,7 +8,7 @@ interface IProps {
     children: React.ReactChild;
 }
 
-export const AuthLayout = observer(({ children }: IProps) => {
+export const AuthLayout = ({ children }: IProps) => {
     useLayoutGlobalLoader();
 
     return (
@@ -23,4 +22,4 @@ export const AuthLayout = observer(({ children }: IProps) => {
             </div>
         </>
     );
-});
+};

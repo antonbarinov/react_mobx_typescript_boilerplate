@@ -1,5 +1,4 @@
 import React from 'react';
-import { observer } from 'mobx-react-lite';
 
 import styles from './styles.module.scss';
 
@@ -9,7 +8,7 @@ interface IProps {
     htmlAttrs?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-export const Container = observer((props: IProps) => {
+export const Container = (props: IProps) => {
     const { children, innerRef, htmlAttrs = {} } = props;
 
     return (
@@ -17,4 +16,4 @@ export const Container = observer((props: IProps) => {
             {children}
         </div>
     );
-});
+};

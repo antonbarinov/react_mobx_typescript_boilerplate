@@ -1,4 +1,4 @@
-import FormValidator from 'helpers/formValidator';
+import FormValidator, { FormField } from 'helpers/formValidator';
 import { ReactChangeEvent } from 'declarations/types';
 import userState from 'globalState/user';
 import { smartRedirect } from 'helpers/redirect';
@@ -7,7 +7,7 @@ import { observable } from 'mobx';
 const passwordInterceptor = (e: ReactChangeEvent) => {
     const val = e.target.value;
 
-    // Accespt only digits
+    // Accept only digits
     if (/\D+/g.test(val)) return undefined;
 
     return val;
@@ -16,8 +16,8 @@ const passwordInterceptor = (e: ReactChangeEvent) => {
 export class LoginPageState {
     @observable isFetching = false;
     formItems = {
-        login: FormValidator.createFormFieldObj(),
-        password: FormValidator.createFormFieldObj('', passwordInterceptor),
+        login: new FormField(),
+        password: new FormField('', passwordInterceptor),
     };
     formValidator = new FormValidator(this.formItems);
 
@@ -25,7 +25,7 @@ export class LoginPageState {
         const { formValidator, formItems } = this;
 
         const isFormValid = await formValidator.validate([
-            formValidator.validateField(formItems.login, async (value: string) => {
+            formValidator.validateField(formItems.login, async (value) => {
                 const val = value.trim();
                 if (val.length < 3) {
                     return `Min length is 3 symbols`;
@@ -34,7 +34,7 @@ export class LoginPageState {
                     return `This login is not allowed`;
                 }
             }),
-            formValidator.validateField(formItems.password, async (value: string) => {
+            formValidator.validateField(formItems.password, async (value) => {
                 const val = value.trim();
                 if (val.length < 3) {
                     return `Min length is 3 symbols`;

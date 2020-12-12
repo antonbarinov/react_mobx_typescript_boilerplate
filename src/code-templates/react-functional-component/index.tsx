@@ -1,6 +1,4 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { useLocalState } from 'hooks/useLocalState';
+import React, { useState } from 'react';
 import { MyExamplePropsState } from './state';
 
 import styles from './styles.module.scss';
@@ -12,8 +10,8 @@ interface IMyExampleProps {
     htmlAttrs?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-const MyExample = observer((props: IMyExampleProps) => {
-    const state = useLocalState(MyExamplePropsState);
+export const MyExample = (props: IMyExampleProps) => {
+    const [state] = useState(() => new MyExamplePropsState());
 
     const { htmlAttrs = {}, text = 'world' } = props;
 
@@ -25,6 +23,4 @@ const MyExample = observer((props: IMyExampleProps) => {
             <input onChange={state.handleTitleChange} />
         </div>
     );
-});
-
-export default MyExample;
+};
