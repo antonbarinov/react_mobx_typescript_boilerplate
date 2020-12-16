@@ -13,6 +13,13 @@ const updateTimeEffect = (state: MainPageState) => () => {
     };
 };
 
+const Page = () => {
+    const { page } = currentRoute.routeParams;
+    if (!page) return null;
+
+    return <h3>Route param "page": {page}</h3>;
+};
+
 export const MainPage = () => {
     const [state] = useState(() => new MainPageState());
 
@@ -40,7 +47,7 @@ export const MainPage = () => {
         <Container innerRef={testRef}>
             <h1>{state.title}</h1>
             <input value={state.title} onChange={state.handleTitleChange} />
-            {page && <h3>Route param "page": {page}</h3>}
+            {page && <Page />}
             <div>This time is {state.time}</div>
             <div>Hash: {currentLocation.location.hash}</div>
             <div>searchParams: {JSON.stringify(searchParams)}</div>
