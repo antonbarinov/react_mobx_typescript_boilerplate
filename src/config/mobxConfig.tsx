@@ -11,12 +11,14 @@ const createElement = React.createElement;
 React.createElement = function() {
     const target = arguments[0];
     if (typeof target === 'function' && !wrappedComponentsSet.has(target)) {
-        if (!target.prototype.shouldComponentUpdate) {
-            wrappedComponentsSet.add(target);
-            const wrapped = observer(target);
-            arguments[0] = wrapped;
-            wrappedComponentsMap.set(target, wrapped);
+        if (target.prototype.shouldComponentUpdate) {
+            delete target.prototype.shouldComponentUpdate;
         }
+
+        wrappedComponentsSet.add(target);
+        const wrapped = observer(target);
+        arguments[0] = wrapped;
+        wrappedComponentsMap.set(target, wrapped);
     } else if (wrappedComponentsSet.has(target)) {
         arguments[0] = wrappedComponentsMap.get(target) || observer(target);
     }
