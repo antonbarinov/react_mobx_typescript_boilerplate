@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { configure } from 'mobx';
 
 const wrappedComponentsSet = new WeakSet();
 const wrappedComponentsMap = new WeakMap();
@@ -24,13 +23,3 @@ React.createElement = function() {
     }
     return createElement.apply(this, arguments);
 };
-
-// Configure MobX to auto batch all sync mutations without using action/runInAction
-/*
-setTimeout(() => {
-    configure({
-        reactionScheduler: (f) => {
-            setTimeout(f, 1);
-        },
-    });
-}, 1);*/

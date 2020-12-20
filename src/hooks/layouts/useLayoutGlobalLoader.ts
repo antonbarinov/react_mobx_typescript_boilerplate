@@ -22,5 +22,5 @@ function handleInitialFetching() {
 export function useLayoutGlobalLoader() {
     useEffect(() => {
         return autorun(handleInitialFetching);
-    });
+    }, []);
 }
