@@ -67,6 +67,18 @@ function stylesLoaders(useModules = false) {
     ];
 }
 
+function buildTime() {
+    const iso = new Date().toISOString();
+    let [date, time] = iso.split('T');
+    date = date
+        .split('-')
+        .reverse()
+        .join('.');
+    time = time.substr(0, 8);
+
+    return date + ' ' + time;
+}
+
 module.exports = {
     mode: dev ? 'development' : 'production',
     entry: {
@@ -165,6 +177,7 @@ module.exports = {
             process: {
                 env: {
                     NODE_ENV: JSON.stringify(NODE_ENV),
+                    buildTime: new Date().getTime(),
                 },
             },
         }),
