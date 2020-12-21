@@ -128,3 +128,11 @@ export function getBool(bool: WithBooleanFlag | boolean) {
         return bool;
     }
 }
+
+export function getSet<T>(obj: object, key: string, defaultValue: T): T {
+    if (obj[key] === undefined) {
+        obj[key] = defaultValue;
+    }
+
+    return obj[key];
+}
