@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import React from 'react';
 
-export class MyExamplePropsState {
+export class MyComponentsState {
     @observable counter = 1;
     @observable title = 'some title';
 

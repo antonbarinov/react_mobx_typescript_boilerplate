@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { MyExamplePropsState } from './state';
+import { MyComponentsState } from './state';
 
 import styles from './styles.module.scss';
 
-interface IMyExampleProps {
+interface IMyComponentProps {
     children?: React.ReactNode;
     innerRef?: React.Ref<HTMLDivElement>;
     text?: string;
     htmlAttrs?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-export const MyExample = (props: IMyExampleProps) => {
-    const [state] = useState(() => new MyExamplePropsState());
+export const MyComponent = (props: IMyComponentProps) => {
+    const [state] = useState(() => new MyComponentsState());
 
     const { htmlAttrs = {}, text = 'world' } = props;
 
