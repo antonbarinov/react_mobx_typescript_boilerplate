@@ -13,7 +13,7 @@ interface IMyComponentProps {
 export const MyComponent = (props: IMyComponentProps) => {
     const [state] = useState(() => new MyComponentsState());
 
-    const { htmlAttrs = {}, text = 'World' } = props;
+    const { htmlAttrs = {}, text = 'world' } = props;
 
     return (
         <div className={styles.some_style} {...htmlAttrs}>
