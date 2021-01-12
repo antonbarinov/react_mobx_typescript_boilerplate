@@ -21,7 +21,7 @@ export const API_BASE_URL = apiUrl;
 
 type UploadProgressFn = (uploadPercentage: number) => any;
 
-export default class ApiRequest<T extends any> {
+export default class ApiRequest<T = any> {
     private __unifyErrorsHandler = true;
     private __method: Method = 'GET';
     private __url = '/';
