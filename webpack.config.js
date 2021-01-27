@@ -177,7 +177,7 @@ module.exports = {
             process: {
                 env: {
                     NODE_ENV: JSON.stringify(NODE_ENV),
-                    buildTime: new Date().getTime(),
+                    buildTime: JSON.stringify(new Date().getTime()),
                 },
             },
         }),
