@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { EventDOM } from 'declarations/types';
 
 /**
  * Handle scroll event on element with helpers calculations
  */
-export default function useScroll(
+export function useScroll(
     scrollContainerRef: React.RefObject<HTMLElement>,
     cb: (e?: EventDOM, maxScrollTop?: number, scrollTop?: number) => any,
 ) {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 // how much we need to swipe to trigger cb
 export const minSwipeOffset = 100;
@@ -6,7 +6,7 @@ export const minSwipeOffset = 100;
 /**
  * Swipe
  */
-export default function useSwipe(
+export function useSwipe(
     elRef: React.RefObject<HTMLElement>,
     direction: 'up' | 'down' | 'left' | 'right',
     cb: (e: TouchEvent) => any,

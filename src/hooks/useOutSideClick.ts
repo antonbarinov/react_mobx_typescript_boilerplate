@@ -4,7 +4,7 @@ import { EventDOM } from 'declarations/types';
 /**
  * Execute callback function when click outside `elemRef`
  */
-export default function useOutSideClick(elemRef: React.RefObject<HTMLElement> | WeakSet<HTMLElement>, cb: (e: EventDOM) => any) {
+export function useOutSideClick(elemRef: React.RefObject<HTMLElement> | WeakSet<HTMLElement>, cb: (e: EventDOM) => any) {
     useEffect(() => {
         const handleClick = (e: EventDOM) => {
             if (elemRef instanceof WeakSet) {
