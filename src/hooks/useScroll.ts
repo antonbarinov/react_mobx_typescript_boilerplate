@@ -4,10 +4,7 @@ import { EventDOM } from 'declarations/types';
 /**
  * Handle scroll event on element with helpers calculations
  */
-export function useScroll(
-    scrollContainerRef: React.RefObject<HTMLElement>,
-    cb: (e?: EventDOM, maxScrollTop?: number, scrollTop?: number) => any,
-) {
+export function useScroll(scrollContainerRef: React.RefObject<HTMLElement>, cb: (e?: EventDOM, maxScrollTop?: number, scrollTop?: number) => any) {
     useEffect(() => {
         const scrollContainer = scrollContainerRef.current;
 

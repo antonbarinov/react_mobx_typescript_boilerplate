@@ -26,9 +26,7 @@ export const SvgIcon = (props: ISvgIconProps) => {
         });
     }, [color]);
 
-    return (
-        <span ref={iconRef} dangerouslySetInnerHTML={{ __html: icon }} {...rest} />
-    );
+    return <span ref={iconRef} dangerouslySetInnerHTML={{ __html: icon }} {...rest} />;
 };
 
 function getAllDomElementChildren(el: Element, cb: (el: Element) => any) {

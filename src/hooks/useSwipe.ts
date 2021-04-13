@@ -6,11 +6,7 @@ export const minSwipeOffset = 100;
 /**
  * Swipe
  */
-export function useSwipe(
-    elRef: React.RefObject<HTMLElement>,
-    direction: 'up' | 'down' | 'left' | 'right',
-    cb: (e: TouchEvent) => any,
-) {
+export function useSwipe(elRef: React.RefObject<HTMLElement>, direction: 'up' | 'down' | 'left' | 'right', cb: (e: TouchEvent) => any) {
     useEffect(() => {
         const el = elRef.current;
 
