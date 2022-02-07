@@ -98,6 +98,7 @@ module.exports = {
 
     devServer: {
         openPage: '../../',
+        port: 8091,
         open: true,
         historyApiFallback: true,
         disableHostCheck: true,

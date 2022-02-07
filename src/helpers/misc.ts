@@ -2,9 +2,7 @@ import { WithBooleanFlag } from 'compositions/WithBooleanFlag';
 
 export function sleep(ms = 0) {
     return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, ms);
+        setTimeout(resolve, ms);
     });
 }
 
