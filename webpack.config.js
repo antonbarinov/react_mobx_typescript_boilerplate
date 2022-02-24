@@ -62,6 +62,10 @@ function stylesLoaders(useModules = false) {
             options: {
                 // Prefer `dart-sass`
                 implementation: require('sass'),
+                sassOptions: {
+                    includePaths: ['src/sass-globals'],
+                },
+                webpackImporter: false,
             },
         },
     ];
@@ -131,6 +135,9 @@ module.exports = {
                 test: /\.(t|j)sx?$/, // .js .jsx .ts .tsx
                 loader: 'ts-loader',
                 include: path.join(__dirname, 'src'),
+                options: {
+                    onlyCompileBundledFiles: true,
+                },
             },
             {
                 test: /\.module\.(c|sa|sc)ss$/,
